@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'django_api.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgres://dbpelis_user:BDP0lWXA29ex8feKB6Ops7tKfN6jLiBM@dpg-co8c4t0l5elc738sg1t0-a.oregon-postgres.render.com/dbpelis',
+        default='postgres://rootpelis:2IzF3YooViDjJecECDq7OyaAkBaJCQGb@dpg-co9r8h4f7o1s739djcog-a.oregon-postgres.render.com/dbpelis_qrr4',
         conn_max_age=600
     )
 }
