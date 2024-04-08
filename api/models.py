@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+# Tablas Unicas
 class Directores(models.Model):
     id_director = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
@@ -40,8 +40,6 @@ class Peliculas(models.Model):
     duracion_minutos = models.IntegerField()
     descripcion = models.CharField(max_length=5000)
     titulo = models.CharField(max_length=3500)
-    director = models.ForeignKey(Directores, on_delete=models.CASCADE, db_column='director_id')
-    productora = models.ForeignKey(Productoras, on_delete=models.CASCADE, db_column='productora_id')
     poster = models.CharField(max_length=255)
     bg_imagen = models.CharField(max_length=255)
 
@@ -50,6 +48,8 @@ class Rating(models.Model):
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario_id')
     rating = models.IntegerField()
+
+#Tablas de favoritos
 
 class DirectoresFavoritos(models.Model):
     id_fDirectores = models.AutoField(primary_key=True)
@@ -72,6 +72,8 @@ class ProductorasFavoritas(models.Model):
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
     provedor = models.ForeignKey(Provedores, on_delete=models.CASCADE, db_column='provedor_id')
 
+#Tablas relacionadas
+
 class PeliculasActores(models.Model):
     id_pActores = models.AutoField(primary_key=True)
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
@@ -86,3 +88,13 @@ class PeliculasProvedores(models.Model):
     id_pProvedores = models.AutoField(primary_key=True)
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
     provedor = models.ForeignKey(Provedores, on_delete=models.CASCADE, db_column='provedor_id')
+
+class PeliculasProductoras(models.Model):
+    id_pProductoras = models.AutoField(primary_key=True)
+    pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
+    productora = models.ForeignKey(Productoras, on_delete=models.CASCADE, db_column='productora_id')
+
+class PeliculasDirectores(models.Model):
+    id_pDirectores = models.AutoField(primary_key=True)
+    pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
+    director = models.ForeignKey(Directores, on_delete=models.CASCADE, db_column='director_id')

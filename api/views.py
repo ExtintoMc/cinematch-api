@@ -2,7 +2,12 @@ from rest_framework import viewsets
 from .serializer import *
 from .models import *
 
-# Create your views here.
+# Views comunes
+
+class DirectoresView(viewsets.ModelViewSet):
+    serializer_class = DirectorSerializer
+    queryset = Directores.objects.all()
+
 class ActoresView(viewsets.ModelViewSet):
     serializer_class = ActoresSerializer
     queryset = Actores.objects.all()
@@ -18,6 +23,16 @@ class ProvedoresView(viewsets.ModelViewSet):
 class ProductorasView(viewsets.ModelViewSet):
     serializer_class = ProductorasSerializer
     queryset = Productoras.objects.all()
+
+class PeliculasView(viewsets.ModelViewSet):
+    serializer_class = PeliculaSerializer
+    queryset = Peliculas.objects.all()
+
+class RatingView(viewsets.ModelViewSet):
+    serializer_class = RatingSerializer
+    queryset = Rating.objects.all()
+
+#Views de favoritos
 
 class DirectoresFavoritosView(viewsets.ModelViewSet):
     serializer_class = DirectoresFavoritosSerializer
@@ -35,26 +50,24 @@ class ProductorasFavoritasView(viewsets.ModelViewSet):
     serializer_class = ProductorasFavoritasSerializer
     queryset = ProductorasFavoritas.objects.all()
 
+#Views relacionales
+
 class PeliculasActoresView(viewsets.ModelViewSet):
     serializer_class = PeliculasActoresSerializer
     queryset = PeliculasActores.objects.all()
 
 class PeliculasGenerosView(viewsets.ModelViewSet):
     serializer_class = PeliculasGenerosSerializer
-    queryset = PeliculasGeneros
+    queryset = PeliculasGeneros.objects.all()
 
 class PeliculasProvedoresView(viewsets.ModelViewSet):
     serializer_class = PeliculasProvedoresSerializer
-    queryset = PeliculasProvedores
+    queryset = PeliculasProvedores.objects.all()
 
-class PeliculasView(viewsets.ModelViewSet):
-    serializer_class = PeliculaSerializer
-    queryset = Peliculas.objects.all()
+class PeliculasProductorasView(viewsets.ModelViewSet):
+    serializer_class = PeliculasProductorasSerializer
+    queryset = PeliculasProductoras.objects.all()
 
-class DirectoresView(viewsets.ModelViewSet):
-    serializer_class = DirectorSerializer
-    queryset = Directores.objects.all()
-
-class RatingView(viewsets.ModelViewSet):
-    serializer_class = RatingSerializer
-    queryset = Rating.objects.all()
+class PeliculasDirectoresView(viewsets.ModelViewSet):
+    serializer_class = PeliculasDirectoresSerializer
+    queryset = PeliculasDirectores.objects.all()

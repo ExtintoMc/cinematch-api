@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import *
 
+#Serializers comunes
+
 class DirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Directores
@@ -37,6 +39,8 @@ class RatingSerializer(serializers.ModelSerializer):
         model = Rating
         fields = '__all__'
 
+#Serializers de favoritos
+
 class DirectoresFavoritosSerializer(serializers.ModelSerializer):
     class Meta:
         model = DirectoresFavoritos
@@ -57,6 +61,8 @@ class ProductorasFavoritasSerializer(serializers.ModelSerializer):
         model = ProductorasFavoritas
         fields = '__all__'
 
+#Serializers relacionales
+
 class PeliculasActoresSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeliculasActores
@@ -71,6 +77,18 @@ class PeliculasProvedoresSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeliculasProvedores
         fields = '__all__'
+
+class PeliculasProductorasSerializer(serializers.ModelSerializer):
+    class Meta:
+        models = PeliculasProductoras
+        fields = '__all__'
+
+class PeliculasDirectoresSerializer(models.Model):
+    class Meta:
+        models = PeliculasDirectores
+        fields = '__all__'
+
+#Usuario
 
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
