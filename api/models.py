@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Tablas Unicas
+
 class Directores(models.Model):
     id_director = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)

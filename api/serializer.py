@@ -88,7 +88,7 @@ class PeliculasDirectoresSerializer(serializers.ModelSerializer):
         models = PeliculasDirectores
         fields = '__all__'
 
-#Usuario
+#Serializer del Usuario
 
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
