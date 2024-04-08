@@ -145,4 +145,13 @@ CORS_ALLOWED_ORIGINS = [
     "https://sub.example.com",
     "http://192.168.1.103:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5173"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://192.168.1.103:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173"
 ]
