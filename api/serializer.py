@@ -83,7 +83,7 @@ class PeliculasProductorasSerializer(serializers.ModelSerializer):
         models = PeliculasProductoras
         fields = '__all__'
 
-class PeliculasDirectoresSerializer(models.Model):
+class PeliculasDirectoresSerializer(serializers.ModelSerializer):
     class Meta:
         models = PeliculasDirectores
         fields = '__all__'
