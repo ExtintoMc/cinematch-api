@@ -2,6 +2,13 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import *
 
+#Serializer del Usuario
+
+class UsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username','email', 'password']
+
 #Serializers comunes
 
 class DirectorSerializer(serializers.ModelSerializer):
@@ -35,62 +42,75 @@ class PeliculaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RatingSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Rating
         fields = '__all__'
+        depth = 1
 
-#Serializers de favoritos
+#Serializers get favoritos
 
 class DirectoresFavoritosSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = DirectoresFavoritos
         fields = '__all__'
+        depth = 1
 
 class GenerosFavoritosSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = GenerosFavoritos
         fields = '__all__'
+        depth = 1
 
 class PeliculasFavoritasSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PeliculasFavoritas
         fields = '__all__'
+        depth = 1
 
 class ProductorasFavoritasSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ProductorasFavoritas
         fields = '__all__'
+        depth = 1
 
 #Serializers relacionales
 
 class PeliculasActoresSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PeliculasActores
         fields = '__all__'
+        depth = 1
 
 class PeliculasGenerosSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PeliculasGeneros
         fields = '__all__'
+        depth = 1
 
 class PeliculasProvedoresSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = PeliculasProvedores
         fields = '__all__'
+        depth = 1
 
 class PeliculasProductorasSerializer(serializers.ModelSerializer):
+
     class Meta:
-        models = PeliculasProductoras
+        model = PeliculasProductoras
         fields = '__all__'
+        depth = 1
 
 class PeliculasDirectoresSerializer(serializers.ModelSerializer):
+
     class Meta:
-        models = PeliculasDirectores
+        model = PeliculasDirectores
         fields = '__all__'
-
-#Serializer del Usuario
-
-class UsuariosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username','email', 'password']
+        depth = 1

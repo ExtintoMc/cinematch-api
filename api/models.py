@@ -4,45 +4,44 @@ from django.contrib.auth.models import User
 # Tablas Unicas
 
 class Directores(models.Model):
-    id_director = models.AutoField(primary_key=True)
+    id_director = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    nacionalidad = models.CharField(max_length=50)
-    fecha_nacimiento = models.DateField(max_length=100)
-    biografia = models.CharField(max_length=3500)
-    foto = models.CharField(max_length=255)
+    nacionalidad = models.CharField(max_length=100, null=True)
+    fecha_nacimiento = models.DateField(max_length=100, null=True)
+    biografia = models.CharField(max_length=3500, null=True)
+    foto = models.CharField(max_length=255, null=True)
 
 class Actores(models.Model):
-    id_actor = models.AutoField(primary_key=True)
+    id_actor = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    nacionalidad = models.CharField(max_length=50)
-    fecha_nacimiento = models.DateField(max_length=50)
-    biografia = models.CharField(max_length=1500)
-    foto = models.CharField(max_length=255)
+    nacionalidad = models.CharField(max_length=100, null=True)
+    fecha_nacimiento = models.DateField(max_length=50, null=True)
+    biografia = models.CharField(max_length=3500, null=True)
+    foto = models.CharField(max_length=255, null=True)
  
 class Genero(models.Model):
-    id_genero = models.AutoField(primary_key=True)
+    id_genero = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
 
 class Provedores(models.Model):
-    id_provedor = models.AutoField(primary_key=True)
+    id_provedor = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    foto = models.CharField(max_length=255)
+    foto = models.CharField(max_length=255, null=True)
 
 class Productoras(models.Model):
-    id_productora = models.AutoField(primary_key=True)
+    id_productora = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100)
     pais = models.CharField(max_length=50)
     logo = models.CharField(max_length=250)
 
 class Peliculas(models.Model):
-    id_pelicula = models.AutoField(primary_key=True)
+    id_pelicula = models.IntegerField(primary_key=True)
     titulo = models.CharField(max_length=100)
-    anno_estreno = models.IntegerField()
+    anno_estreno = models.DateField(max_length=50)
     duracion_minutos = models.IntegerField()
-    descripcion = models.CharField(max_length=5000)
-    titulo = models.CharField(max_length=3500)
-    poster = models.CharField(max_length=255)
-    bg_imagen = models.CharField(max_length=255)
+    descripcion = models.CharField(max_length=5000, null=True)
+    poster = models.CharField(max_length=255, null=True)
+    bg_imagen = models.CharField(max_length=255, null=True)
 
 class Rating(models.Model):
     id_rating = models.AutoField(primary_key=True)
@@ -78,7 +77,7 @@ class ProductorasFavoritas(models.Model):
 class PeliculasActores(models.Model):
     id_pActores = models.AutoField(primary_key=True)
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
-    actores = models.ForeignKey(Actores, on_delete=models.CASCADE, db_column='actor_id')
+    actor = models.ForeignKey(Actores, on_delete=models.CASCADE, db_column='actor_id')
 
 class PeliculasGeneros(models.Model):
     id_pGeneros = models.AutoField(primary_key=True)

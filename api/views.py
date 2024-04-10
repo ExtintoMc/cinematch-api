@@ -1,5 +1,8 @@
 from rest_framework import viewsets
+from rest_framework import status
+from rest_framework.response import Response
 from .serializer import *
+from .serializerPost import *
 from .models import *
 
 # Views comunes
@@ -29,45 +32,28 @@ class PeliculasView(viewsets.ModelViewSet):
     queryset = Peliculas.objects.all()
 
 class RatingView(viewsets.ModelViewSet):
-    serializer_class = RatingSerializer
-    queryset = Rating.objects.all()
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return PostRatingSerializer
+        else:
+            return RatingSerializer
+        
+    def get_queryset(self):
+        user = self.request.query_params.get('id', None)
 
-#Views de favoritos
+        if user:
+            queryset = DirectoresFavoritos.objects.filter(user=user)
+        else:
+            queryset = DirectoresFavoritos.objects.all()
 
-class DirectoresFavoritosView(viewsets.ModelViewSet):
-    serializer_class = DirectoresFavoritosSerializer
-    queryset = DirectoresFavoritos.objects.all()
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
 
-class GenerosFavoritosView(viewsets.ModelViewSet):
-    serializer_class = GenerosFavoritosSerializer
-    queryset = GenerosFavoritos.objects.all()
+        if not queryset.exists():
+            message = "No se encontraron directores para los criterios de búsqueda proporcionados."
+            return Response(data={"detail": message}, status=status.HTTP_404_NOT_FOUND)
 
-class PeliculasFavoritasView(viewsets.ModelViewSet):
-    serializer_class = PeliculasFavoritasSerializer
-    queryset = PeliculasFavoritas.objects.all()
-
-class ProductorasFavoritasView(viewsets.ModelViewSet):
-    serializer_class = ProductorasFavoritasSerializer
-    queryset = ProductorasFavoritas.objects.all()
-
-#Views relacionales
-
-class PeliculasActoresView(viewsets.ModelViewSet):
-    serializer_class = PeliculasActoresSerializer
-    queryset = PeliculasActores.objects.all()
-
-class PeliculasGenerosView(viewsets.ModelViewSet):
-    serializer_class = PeliculasGenerosSerializer
-    queryset = PeliculasGeneros.objects.all()
-
-class PeliculasProvedoresView(viewsets.ModelViewSet):
-    serializer_class = PeliculasProvedoresSerializer
-    queryset = PeliculasProvedores.objects.all()
-
-class PeliculasProductorasView(viewsets.ModelViewSet):
-    serializer_class = PeliculasProductorasSerializer
-    queryset = PeliculasProductoras.objects.all()
-
-class PeliculasDirectoresView(viewsets.ModelViewSet):
-    serializer_class = PeliculasDirectoresSerializer
-    queryset = PeliculasDirectores.objects.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

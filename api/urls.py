@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework import routers
 from api import views
 from api import viewsAuth
+from api import viewsFavoritos
+from api import viewsRelacionadas
 
 router = routers.DefaultRouter()
 router.register(r'directores', views.DirectoresView, 'directores')
@@ -11,15 +13,15 @@ router.register(r'provedores', views.ProvedoresView, 'provedores')
 router.register(r'productoras', views.ProductorasView, 'productoras')
 router.register(r'peliculas', views.PeliculasView, 'peliculas')
 router.register(r'rating', views.RatingView, 'rating')
-router.register(r'directores_f', views.DirectoresFavoritosView, 'directores_f')
-router.register(r'generos_f', views.GenerosFavoritosView, 'generos_f')
-router.register(r'peliculas_f', views.PeliculasFavoritasView, 'peliculas_f')
-router.register(r'productoras_f', views.ProductorasFavoritasView, 'productoras_f')
-router.register(r'peliculas_actores', views.PeliculasActoresView, 'peliculas_actores')
-router.register(r'peliculas_generos', views.PeliculasGenerosView, 'peliculas_generos')
-router.register(r'peliculas_provedores', views.PeliculasProvedoresView, 'peliculas_provedores')
-router.register(r'peliculas_productoras', views.PeliculasProductorasView, 'peliculas_productoras')
-router.register(r'peliculas_directores', views.PeliculasDirectoresView, 'peliculas_directores')
+router.register(r'directores_f', viewsFavoritos.DirectoresFavoritosView, 'directores_f')
+router.register(r'generos_f', viewsFavoritos.GenerosFavoritosView, 'generos_f')
+router.register(r'peliculas_f', viewsFavoritos.PeliculasFavoritasView, 'peliculas_f')
+router.register(r'productoras_f', viewsFavoritos.ProductorasFavoritasView, 'productoras_f')
+router.register(r'peliculas_actores', viewsRelacionadas.PeliculasActoresView, 'peliculas_actores')
+router.register(r'peliculas_generos', viewsRelacionadas.PeliculasGenerosView, 'peliculas_generos')
+router.register(r'peliculas_provedores', viewsRelacionadas.PeliculasProvedoresView, 'peliculas_provedores')
+router.register(r'peliculas_productoras', viewsRelacionadas.PeliculasProductorasView, 'peliculas_productoras')
+router.register(r'peliculas_directores', viewsRelacionadas.PeliculasDirectoresView, 'peliculas_directores')
 
 urlpatterns = [
     path("v1/", include(router.urls)),
