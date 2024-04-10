@@ -145,7 +145,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://sub.example.com",
     "http://192.168.1.103:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:5173"
+    "http://127.0.0.1:8081",
+    "http://localhost:5173",
+    "http://localhost:8081"
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -154,6 +156,8 @@ CORS_ORIGIN_WHITELIST = [
     "http://192.168.1.103:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5173"
+    "http://127.0.0.1:8081",
+    "http://localhost:8081"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
