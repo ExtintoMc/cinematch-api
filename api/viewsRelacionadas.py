@@ -161,14 +161,3 @@ class PeliculasDirectoresView(viewsets.ModelViewSet):
             queryset = PeliculasDirectores.objects.all()
 
         return queryset
-    
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        if not queryset.exists():
-            message = "No se encontraron directores para los criterios de búsqueda proporcionados."
-            return Response(data={"detail": message}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-    

@@ -13,10 +13,10 @@ class DirectoresFavoritosView(viewsets.ModelViewSet):
             return DirectoresFavoritosSerializer
 
     def get_queryset(self):
-        user = self.request.query_params.get('id', None)
+        usuario_id = self.request.query_params.get('usuario_id', None)
 
-        if user:
-            queryset = DirectoresFavoritos.objects.filter(user=user)
+        if usuario_id:
+            queryset = DirectoresFavoritos.objects.filter(usuario_id=usuario_id)
         else:
             queryset = DirectoresFavoritos.objects.all()
 
@@ -70,9 +70,9 @@ class PeliculasFavoritasView(viewsets.ModelViewSet):
         user = self.request.query_params.get('id', None)
 
         if user:
-            queryset = DirectoresFavoritos.objects.filter(user=user)
+            queryset = PeliculasFavoritas.objects.filter(user=user)
         else:
-            queryset = DirectoresFavoritos.objects.all()
+            queryset = PeliculasFavoritas.objects.all()
 
         return queryset
     

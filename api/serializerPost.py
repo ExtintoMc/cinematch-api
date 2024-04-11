@@ -9,7 +9,6 @@ class PostRatingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PostDirectoresFavoritosSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = DirectoresFavoritos
         fields = '__all__'
