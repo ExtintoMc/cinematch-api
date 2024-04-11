@@ -43,9 +43,9 @@ class GenerosFavoritosView(viewsets.ModelViewSet):
         user = self.request.query_params.get('id', None)
 
         if user:
-            queryset = DirectoresFavoritos.objects.filter(user=user)
+            queryset = GenerosFavoritos.objects.filter(user=user)
         else:
-            queryset = DirectoresFavoritos.objects.all()
+            queryset = GenerosFavoritos.objects.all()
 
         return queryset
     
@@ -97,9 +97,9 @@ class ProductorasFavoritasView(viewsets.ModelViewSet):
         user = self.request.query_params.get('id', None)
 
         if user:
-            queryset = DirectoresFavoritos.objects.filter(user=user)
+            queryset = ProductorasFavoritas.objects.filter(user=user)
         else:
-            queryset = DirectoresFavoritos.objects.all()
+            queryset = ProductorasFavoritas.objects.all()
 
         return queryset
     
