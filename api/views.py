@@ -40,9 +40,12 @@ class RatingView(viewsets.ModelViewSet):
         
     def get_queryset(self):
         user = self.request.query_params.get('id', None)
+        pelicula_id = self.request.query_params.get('pelicula_id', None)
 
         if user:
             queryset = Rating.objects.filter(user=user)
+        if pelicula_id:
+            queryset = Rating.objects.filter(pelicula_id=pelicula_id)
         else:
             queryset = Rating.objects.all()
 
