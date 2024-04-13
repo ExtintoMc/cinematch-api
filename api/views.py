@@ -42,9 +42,9 @@ class RatingView(viewsets.ModelViewSet):
         user = self.request.query_params.get('id', None)
 
         if user:
-            queryset = DirectoresFavoritos.objects.filter(user=user)
+            queryset = Rating.objects.filter(user=user)
         else:
-            queryset = DirectoresFavoritos.objects.all()
+            queryset = Rating.objects.all()
 
         return queryset
     
