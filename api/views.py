@@ -44,8 +44,10 @@ class RatingView(viewsets.ModelViewSet):
 
         if user:
             queryset = Rating.objects.filter(user=user)
-        if pelicula_id:
+        elif pelicula_id:
             queryset = Rating.objects.filter(pelicula_id=pelicula_id)
+        elif user and pelicula_id:
+            queryset = Rating.objects.filter(user=user, pelicula_id=pelicula_id)
         else:
             queryset = Rating.objects.all()
 
