@@ -4,6 +4,7 @@ from api import views
 from api import viewsAuth
 from api import viewsFavoritos
 from api import viewsRelacionadas
+from api import viewsRecomendaciones
 
 router = routers.DefaultRouter()
 router.register(r'directores', views.DirectoresView, 'directores')
@@ -28,4 +29,5 @@ urlpatterns = [
     path('login', viewsAuth.login),
     path('register', viewsAuth.register),
     path('profile', viewsAuth.profile),
+    path('recomendaciones/<int:user_id>/', viewsRecomendaciones.rPeliculasView.as_view(), name='recomendaciones'),
 ]

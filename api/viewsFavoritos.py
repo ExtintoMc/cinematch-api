@@ -40,10 +40,10 @@ class GenerosFavoritosView(viewsets.ModelViewSet):
             return GenerosFavoritosSerializer
     
     def get_queryset(self):
-        user = self.request.query_params.get('id', None)
+        usuario_id = self.request.query_params.get('usuario_id', None)
 
-        if user:
-            queryset = GenerosFavoritos.objects.filter(user=user)
+        if usuario_id:
+            queryset = GenerosFavoritos.objects.filter(usuario_id=usuario_id)
         else:
             queryset = GenerosFavoritos.objects.all()
 
@@ -67,10 +67,10 @@ class PeliculasFavoritasView(viewsets.ModelViewSet):
             return PeliculasFavoritasSerializer
        
     def get_queryset(self):
-        user = self.request.query_params.get('id', None)
+        usuario_id = self.request.query_params.get('usuario_id', None)
 
-        if user:
-            queryset = PeliculasFavoritas.objects.filter(user=user)
+        if usuario_id:
+            queryset = PeliculasFavoritas.objects.filter(usuario_id=usuario_id)
         else:
             queryset = PeliculasFavoritas.objects.all()
 
@@ -94,10 +94,10 @@ class ProductorasFavoritasView(viewsets.ModelViewSet):
             return ProductorasFavoritasSerializer
           
     def get_queryset(self):
-        user = self.request.query_params.get('id', None)
+        usuario_id = self.request.query_params.get('usuario_id', None)
 
-        if user:
-            queryset = ProductorasFavoritas.objects.filter(user=user)
+        if usuario_id:
+            queryset = ProductorasFavoritas.objects.filter(usuario_id=usuario_id)
         else:
             queryset = ProductorasFavoritas.objects.all()
 

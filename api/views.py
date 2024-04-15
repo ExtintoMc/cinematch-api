@@ -39,15 +39,15 @@ class RatingView(viewsets.ModelViewSet):
             return RatingSerializer
         
     def get_queryset(self):
-        user = self.request.query_params.get('id', None)
+        usuario_id = self.request.query_params.get('usuario_id', None)
         pelicula_id = self.request.query_params.get('pelicula_id', None)
 
-        if user:
-            queryset = Rating.objects.filter(user=user)
+        if usuario_id:
+            queryset = Rating.objects.filter(usuario_id=usuario_id)
         elif pelicula_id:
             queryset = Rating.objects.filter(pelicula_id=pelicula_id)
-        elif user and pelicula_id:
-            queryset = Rating.objects.filter(user=user, pelicula_id=pelicula_id)
+        elif usuario_id and pelicula_id:
+            queryset = Rating.objects.filter(usuario_id=usuario_id, pelicula_id=pelicula_id)
         else:
             queryset = Rating.objects.all()
 
