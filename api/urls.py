@@ -31,5 +31,7 @@ urlpatterns = [
     path('profile', viewsAuth.profile),
     path('recomendaciones/<int:user_id>/', viewsRecomendaciones.rPeliculasView.as_view(), name='recomendaciones'),
     path('recomendacionesByGenero/<int:user_id>/', viewsRecomendaciones.rPeliculasGenerosView.as_view(), name='recomendacionesByGenero'),
+    path('recomendacionesByProvedores/<int:user_id>/', viewsRecomendaciones.rPeliculasProvedoresView.as_view(), name='recomendacionesByProvedores'),
+    path('recomendacionesByProductoras/<int:user_id>/', viewsRecomendaciones.rPeliculasProductorasView.as_view(), name='recomendacionesByProductoras'),
 
 ]
