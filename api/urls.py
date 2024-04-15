@@ -30,4 +30,6 @@ urlpatterns = [
     path('register', viewsAuth.register),
     path('profile', viewsAuth.profile),
     path('recomendaciones/<int:user_id>/', viewsRecomendaciones.rPeliculasView.as_view(), name='recomendaciones'),
+    path('recomendacionesByGenero/<int:user_id>/', viewsRecomendaciones.rPeliculasGenerosView.as_view(), name='recomendacionesByGenero'),
+
 ]
