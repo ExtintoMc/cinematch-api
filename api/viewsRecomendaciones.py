@@ -12,7 +12,20 @@ class rPeliculasView(APIView):
         
         ratings = Rating.objects.filter(usuario_id=user_id)
         
-        ratingsUsuarios = Rating.objects.all()
+        if not ratings:
+            unique_movies = {}  
+            recommended_ids = set()
+            popular_movies = Rating.objects.values('pelicula_id').annotate(rating_count=Count('pelicula_id')).order_by('-rating_count')[:10]
+            popular_movie_ids = [movie['pelicula_id'] for movie in popular_movies]
+            for movie in popular_movie_ids:
+                recommended_ids.add(movie)
+                recommended_movie = Peliculas.objects.get(id_pelicula=movie)
+                serializer = PeliculaSerializer(recommended_movie)
+                unique_movies[movie] = serializer.data
+
+            return Response({'recomendaciones': unique_movies.values()})
+
+        ratingsUsuarios = Rating.objects.all().distinct('pelicula_id', 'usuario_id')
         moviesUsers = pd.DataFrame(list(ratingsUsuarios.values('pelicula_id', 'usuario_id', 'rating'))).pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
 
         moviesId = []
@@ -25,40 +38,43 @@ class rPeliculasView(APIView):
         model.fit(matMovies)
 
         def recommender(moviesIds, data, n):
-                recommendations = {}
-                for movieId in moviesIds:
-                    movieId = Peliculas.objects.get(id_pelicula=movieId).id_pelicula
+            recommendations = {}
+            for movieId in moviesIds:
+                movieId = Peliculas.objects.get(id_pelicula=movieId).id_pelicula
 
-                    idx = moviesUsers.index.get_loc(movieId)
-                    distance, indices = model.kneighbors(data[idx], n_neighbors=n)
+                idx = moviesUsers.index.get_loc(movieId)
+                distance, indices = model.kneighbors(data[idx], n_neighbors=n)
 
-                    recommendations[movieId] = []
-                    for index, i in enumerate(indices[0]):
-                        if i != idx:
-                            recommended_movie_id = Peliculas.objects.get(id_pelicula=moviesUsers.index[i]).id_pelicula
-                            recommendations[movieId].append(recommended_movie_id)
-                        if i < n:
-                            break
+                recommendations[movieId] = []
+                for index, i in enumerate(indices[0]):
+                    if i != idx:
+                        recommended_movie_id = Peliculas.objects.get(id_pelicula=moviesUsers.index[i]).id_pelicula
+                        recommendations[movieId].append(recommended_movie_id)
+                    if i < n:
+                        break
 
-                return recommendations
-
+            return recommendations
+        
         def get_unique_recommendations(recommendations):
-                unique_movies = {} 
-                recommended_ids = set()  
-                for movie_id, recommended_movies in recommendations.items():
-                    for recommended_movie_id in recommended_movies:
-                        if recommended_movie_id not in recommended_ids:
-                            recommended_ids.add(recommended_movie_id)  
-                            recommended_movie = Peliculas.objects.get(id_pelicula=recommended_movie_id)
-                            serializer = PeliculaSerializer(recommended_movie)
-                            unique_movies[recommended_movie_id] = serializer.data
-                return list(unique_movies.values())
-
+            unique_movies = {}  # Utilizamos un diccionario para almacenar los objetos de película únicos
+            recommended_ids = set()  # Utilizamos un conjunto para llevar un registro de los IDs de película recomendados
+            for movie_id, recommended_movies in recommendations.items():
+                for recommended_movie_id in recommended_movies:
+                    # Verificamos si el ID de película ya ha sido recomendado
+                    if recommended_movie_id not in recommended_ids:
+                        recommended_ids.add(recommended_movie_id)  # Agregamos el ID de película al conjunto de IDs recomendados
+                        # Obtenemos el objeto Peliculas y lo serializamos
+                        recommended_movie = Peliculas.objects.get(id_pelicula=recommended_movie_id)
+                        serializer = PeliculaSerializer(recommended_movie)
+                        # Agregamos los datos serializados al diccionario de películas únicas
+                        unique_movies[recommended_movie_id] = serializer.data
+            return list(unique_movies.values())
+        
         idPeliculasRecommender = recommender(moviesId, matMovies, 10)
         peliculasRecommender = get_unique_recommendations(idPeliculasRecommender)
 
         return Response({'recomendaciones': peliculasRecommender})
-        
+
 class rPeliculasGenerosView(APIView):
     def get(self, request, user_id):
         
