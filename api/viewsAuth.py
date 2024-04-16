@@ -4,7 +4,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
-
+from django.core.exceptions import ObjectDoesNotExist
 from .serializer import UsuariosSerializer
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -27,22 +27,21 @@ def register(request):
 
 @api_view(['POST'])
 def login(request):
-    
-    user = get_object_or_404(User, email=request.data['email'])
+    try:
+        user = User.objects.get(email=request.data['email'])
+    except ObjectDoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if not user.check_password(request.data['password']):
         return Response({'error': 'Invalid password'}, status=status.HTTP_400_BAD_REQUEST)
     
     token, created = Token.objects.get_or_create(user=user)
     serializer = UsuariosSerializer(instance=user)
-    return Response({"token": token.key, "user": serializer.data}, status.HTTP_200_OK)  
-
+    return Response({"token": token.key, "user": serializer.data}, status.HTTP_200_OK)
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+
 def profile(request):
-
-    print(request.user.id)
-
-    return Response("Estas logueado como {}".format(request.user.username),status=status.HTTP_200_OK)  
+    return Response("Estas logueado como {}".format(request.user.username), status=status.HTTP_200_OK)
