@@ -95,8 +95,14 @@ class rPeliculasGenerosView(APIView):
                 serializer = PeliculaSerializer(peliculas_mas_populares, many=True)
                 return Response({'recomendaciones': serializer.data})
         
-        ratingsUsuariosGenero = Rating.objects.filter(pelicula__peliculasgeneros__genero__id_genero=genero_deseado)
-        moviesUsersGenero = pd.DataFrame(list(ratingsUsuariosGenero.values('pelicula_id', 'usuario_id', 'rating'))).pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
+        ratingsUsuariosGenero = Rating.objects.filter(pelicula__peliculasgeneros__genero__id_genero=genero_deseado).distinct('pelicula_id', 'usuario_id')
+        moviesUsersGenero = pd.DataFrame(list(ratingsUsuariosGenero.values('pelicula_id', 'usuario_id', 'rating')))
+
+        # Eliminar duplicados si existen
+        moviesUsersGenero.drop_duplicates(['pelicula_id', 'usuario_id'], inplace=True)
+
+        # Luego, realiza la operación pivot
+        moviesUsersGenero = moviesUsersGenero.pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
 
         moviesIdsByGenero = []
         for movie_id in moviesIdUser:
@@ -143,7 +149,7 @@ class rPeliculasGenerosView(APIView):
         peliculasRecommender = get_unique_recommendations(idPeliculasRecommender)
 
         return Response({'recomendaciones': peliculasRecommender})
-    
+
 class rPeliculasProvedoresView(APIView):
     def get(self, request, user_id):
         provedor_deseado = request.query_params.get('provedor_id', None)
