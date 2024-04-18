@@ -71,6 +71,13 @@ class PeliculasFavoritasSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class ProvedoresFavoritosSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProvedoresFavoritos
+        fields = '__all__'
+        depth = 1
+
 class ProductorasFavoritasSerializer(serializers.ModelSerializer):
 
     class Meta:

@@ -25,6 +25,12 @@ class PostPeliculasFavoritasSerializer(serializers.ModelSerializer):
         model = PeliculasFavoritas
         fields = '__all__'
 
+class PostProvedoresFavoritosSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProvedoresFavoritos
+        fields = '__all__'
+
 class PostProductorasFavoritasSerializer(serializers.ModelSerializer):
 
     class Meta:

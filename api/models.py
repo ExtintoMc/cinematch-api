@@ -66,6 +66,11 @@ class PeliculasFavoritas(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario_id')
     pelicula = models.ForeignKey(Peliculas, on_delete=models.CASCADE, db_column='pelicula_id')
 
+class ProvedoresFavoritos(models.Model):
+    id_fProvedores = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario_id')
+    provedor = models.ForeignKey(Provedores, on_delete=models.CASCADE, db_column='provedor_id')
+
 class ProductorasFavoritas(models.Model):
     id_fProductoras = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, db_column='usuario_id')

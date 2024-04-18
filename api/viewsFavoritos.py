@@ -85,6 +85,34 @@ class PeliculasFavoritasView(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+class ProvedoresFavoritosView(viewsets.ModelViewSet):
+    def get_serializer_class(self):
+        if self.action == "create":
+            return PostProvedoresFavoritosSerializer
+        else:
+            return ProvedoresFavoritosSerializer
+    
+    def get_queryset(self):
+        usuario_id = self.request.query_params.get('usuario_id', None)
+
+        if usuario_id:
+            queryset = ProvedoresFavoritos.objects.filter(usuario_id=usuario_id)
+        else:
+            queryset = ProvedoresFavoritos.objects.all()
+
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if not queryset.exists():
+            message = "No se encontraron directores para los criterios de búsqueda proporcionados."
+            return Response(data={"detail": message}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class ProductorasFavoritasView(viewsets.ModelViewSet):
     def get_serializer_class(self):
