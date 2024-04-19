@@ -23,7 +23,7 @@ class rPeliculasView(APIView):
                 serializer = PeliculaSerializer(recommended_movie)
                 unique_movies[movie] = serializer.data
 
-            return Response({'recomendaciones': unique_movies.values()})
+            return Response({'recomendaciones': list(unique_movies.values())[:15]})
 
         ratingsUsuarios = Rating.objects.all().distinct('pelicula_id', 'usuario_id')
         moviesUsers = pd.DataFrame(list(ratingsUsuarios.values('pelicula_id', 'usuario_id', 'rating'))).pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
@@ -68,6 +68,8 @@ class rPeliculasView(APIView):
                         serializer = PeliculaSerializer(recommended_movie)
                         # Agregamos los datos serializados al diccionario de películas únicas
                         unique_movies[recommended_movie_id] = serializer.data
+                        if len(unique_movies) >= 15:
+                            return list(unique_movies.values())[:15]
             return list(unique_movies.values())
         
         idPeliculasRecommender = recommender(moviesId, matMovies, 10)
@@ -77,24 +79,23 @@ class rPeliculasView(APIView):
 
 class rPeliculasGenerosView(APIView):
     def get(self, request, user_id):
-        
         genero_deseado = request.query_params.get('genero_id', None)
-        
+
         ratings = Rating.objects.filter(usuario_id=user_id)
         moviesIdUser = [rating.pelicula_id for rating in ratings]
-        
+
         if not moviesIdUser:
             genero_count = Rating.objects.filter(pelicula__peliculasgeneros__genero__id_genero=genero_deseado).values('pelicula__peliculasgeneros__genero__nombre').annotate(num_ratings=Count('pelicula_id')).order_by('-num_ratings')
-            
+
             if genero_count:
                 genero_mas_popular = genero_count[0]['pelicula__peliculasgeneros__genero__nombre']
-                
+
                 movies_mas_populares = PeliculasGeneros.objects.filter(genero__nombre=genero_mas_popular).values_list('pelicula_id', flat=True)
                 peliculas_mas_populares = Peliculas.objects.filter(id_pelicula__in=movies_mas_populares)[:10]
-                
+
                 serializer = PeliculaSerializer(peliculas_mas_populares, many=True)
-                return Response({'recomendaciones': serializer.data})
-        
+                return Response({'recomendaciones': serializer.data[:15]})
+
         ratingsUsuariosGenero = Rating.objects.filter(pelicula__peliculasgeneros__genero__id_genero=genero_deseado).distinct('pelicula_id', 'usuario_id')
         moviesUsersGenero = pd.DataFrame(list(ratingsUsuariosGenero.values('pelicula_id', 'usuario_id', 'rating')))
 
@@ -112,7 +113,7 @@ class rPeliculasGenerosView(APIView):
                     moviesIdsByGenero.append(movie_id)
 
         matMovies = csr_matrix(moviesUsersGenero.values)
-        model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=6)
+        model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=20)
         model.fit(matMovies)
 
         def recommender(moviesIds, data, n):
@@ -128,11 +129,11 @@ class rPeliculasGenerosView(APIView):
                     if i != idx:
                         recommended_movie_id = Peliculas.objects.get(id_pelicula=moviesUsersGenero.index[i]).id_pelicula
                         recommendations[movieId].append(recommended_movie_id)
-                    if i < n:
-                        break
+                        if len(recommendations[movieId]) >= n:
+                            break
 
             return recommendations
-        
+
         def get_unique_recommendations(recommendations):
             unique_movies = {}
             recommended_ids = set()
@@ -143,12 +144,14 @@ class rPeliculasGenerosView(APIView):
                         recommended_movie = Peliculas.objects.get(id_pelicula=recommended_movie_id)
                         serializer = PeliculaSerializer(recommended_movie)
                         unique_movies[recommended_movie_id] = serializer.data
+                        if len(unique_movies) >= 15:
+                            return list(unique_movies.values())
             return list(unique_movies.values())
-        
-        idPeliculasRecommender = recommender(moviesIdsByGenero, matMovies, 10)
+
+        idPeliculasRecommender = recommender(moviesIdsByGenero, matMovies, 15)
         peliculasRecommender = get_unique_recommendations(idPeliculasRecommender)
 
-        return Response({'recomendaciones': peliculasRecommender})
+        return Response({'recomendaciones': peliculasRecommender[:15]})
 
 class rPeliculasProvedoresView(APIView):
     def get(self, request, user_id):
@@ -167,7 +170,7 @@ class rPeliculasProvedoresView(APIView):
                 peliculas_mas_populares = Peliculas.objects.filter(id_pelicula__in=movies_mas_populares)[:10]
                 
                 serializer = PeliculaSerializer(peliculas_mas_populares, many=True)
-                return Response({'recomendaciones': serializer.data})
+                return Response({'recomendaciones': serializer.data[:15]})
             
         ratings_usuarios_proveedor = Rating.objects.filter(pelicula__peliculasprovedores__provedor__id_provedor=provedor_deseado)
         movies_users_proveedor = pd.DataFrame(list(ratings_usuarios_proveedor.values('pelicula_id', 'usuario_id', 'rating'))).pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
@@ -196,8 +199,8 @@ class rPeliculasProvedoresView(APIView):
                     if i != idx:
                         recommended_movie_id = Peliculas.objects.get(id_pelicula=movies_users_proveedor.index[i]).id_pelicula
                         recommendations[movie_id].append(recommended_movie_id)
-                    if index < n:
-                        break
+                        if len(recommendations[movie_id]) >= n:
+                            break
 
             return recommendations
         
@@ -211,13 +214,15 @@ class rPeliculasProvedoresView(APIView):
                         recommended_movie = Peliculas.objects.get(id_pelicula=recommended_movie_id)
                         serializer = PeliculaSerializer(recommended_movie)
                         unique_movies[recommended_movie_id] = serializer.data
+                        if len(unique_movies) >= 15:
+                            return list(unique_movies.values())
             return list(unique_movies.values())
         
-        id_peliculas_recommender = recommender(movies_ids_by_proveedor, mat_movies, 10)
+        id_peliculas_recommender = recommender(movies_ids_by_proveedor, mat_movies, 15)
         peliculas_recommender = get_unique_recommendations(id_peliculas_recommender)
 
-        return Response({'recomendaciones': peliculas_recommender})
-
+        return Response({'recomendaciones': peliculas_recommender[:15]})
+    
 class rPeliculasProductorasView(APIView):
     def get(self, request, user_id):
         productora_deseada = request.query_params.get('productora_id', None)
@@ -235,7 +240,7 @@ class rPeliculasProductorasView(APIView):
                 peliculas_mas_populares = Peliculas.objects.filter(id_pelicula__in=movies_mas_populares)[:10]
                 
                 serializer = PeliculaSerializer(peliculas_mas_populares, many=True)
-                return Response({'recomendaciones': serializer.data})
+                return Response({'recomendaciones': serializer.data[:15]})
         
         ratings_usuarios_productora = Rating.objects.filter(pelicula__peliculasproductoras__productora__id_productora=productora_deseada)
         movies_users_productora = pd.DataFrame(list(ratings_usuarios_productora.values('pelicula_id', 'usuario_id', 'rating'))).pivot(index='pelicula_id', columns='usuario_id', values='rating').fillna(0)
@@ -264,8 +269,8 @@ class rPeliculasProductorasView(APIView):
                     if i != idx:
                         recommended_movie_id = Peliculas.objects.get(id_pelicula=movies_users_productora.index[i]).id_pelicula
                         recommendations[movie_id].append(recommended_movie_id)
-                    if index < n:
-                        break
+                        if len(recommendations[movie_id]) >= n:
+                            break
 
             return recommendations
         
@@ -279,9 +284,11 @@ class rPeliculasProductorasView(APIView):
                         recommended_movie = Peliculas.objects.get(id_pelicula=recommended_movie_id)
                         serializer = PeliculaSerializer(recommended_movie)
                         unique_movies[recommended_movie_id] = serializer.data
+                        if len(unique_movies) >= 15:
+                            return list(unique_movies.values())
             return list(unique_movies.values())
         
         id_peliculas_recommender = recommender(movies_ids_by_productora, mat_movies, 10)
         peliculas_recommender = get_unique_recommendations(id_peliculas_recommender)
 
-        return Response({'recomendaciones': peliculas_recommender})
+        return Response({'recomendaciones': peliculas_recommender[:15]})
